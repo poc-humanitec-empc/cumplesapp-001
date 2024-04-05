@@ -1,5 +1,6 @@
 const http = require('http');
 const mysql = require('mysql2');
+const url = require('url');
 
 // create the connection to database
 const connection = mysql.createConnection({
@@ -12,6 +13,13 @@ const connection = mysql.createConnection({
 
 const requestHandler = async (request, response) => {
   console.log(request.url);
+
+  const reqUrl = url.parse(request.url).pathname
+
+  if (reqUrl == "/secret") {
+    response.end('reading shared secret from environment variable: ' + process.env.SHARED_SECRET);
+  }
+
 
   // Run hello world query
   const [rows, fields] = await connection.promise().query('SELECT "This is an example application deployed with Score!" as message');
